@@ -42,6 +42,24 @@ public class SCS {
 		SCSWriteCSV.SetExcelData(i,j,Text);
 	}
 	
+	public static void GetWindsorTitle() throws Exception{
+		SCSWriteCSV.getExcelPath("C:\\Users\\sakthivel\\Documents\\SCS\\SCS.xlsx", "Title");
+		title=dr.getTitle();
+		SCSWriteCSV.SetExcelData(15,1,title);
+	}
+	
+	public static void GetWindsorDescription() throws Exception{
+		SCSWriteCSV.getExcelPath("C:\\Users\\sakthivel\\Documents\\SCS\\SCS.xlsx", "Description");
+		JavascriptExecutor jse1 = (JavascriptExecutor)dr;
+		jse1.executeScript("scroll(0, 1500)");
+		WebDriverWait wait = new WebDriverWait(dr,15);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(".//*[@id='product-information']/div/div/div/div")));
+		WebElement ProductInfo = dr.findElement(By.xpath(".//*[@id='product-information']/div/div/div/div"));
+		Text= ProductInfo.getText();
+		TimeUnit.SECONDS.sleep(5);
+		SCSWriteCSV.SetExcelData(15,1,Text);
+	}
+	
 	public static void main(String[] args) throws Exception{
 		
 		dr = new FirefoxDriver();
@@ -67,16 +85,16 @@ public class SCS {
 		GetProductDescription();
 		}
 		dr.findElement(By.xpath(".//*[@id='wrapper']/div[3]/div/div/div/div[3]/ul[2]/li[1]")).click();
-		title=dr.getTitle();
-		SCSWriteCSV.SetExcelData(15,1,title);
-		JavascriptExecutor jse1 = (JavascriptExecutor)dr;
-		jse1.executeScript("scroll(0, 1500)");
-		WebDriverWait wait = new WebDriverWait(dr,15);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(".//*[@id='product-information']/div/div/div/div")));
-		WebElement ProductInfo = dr.findElement(By.xpath(".//*[@id='product-information']/div/div/div/div"));
-		Text= ProductInfo.getText();
-		TimeUnit.SECONDS.sleep(5);
-		SCSWriteCSV.SetExcelData(15,1,Text);
+		List<WebElement> option=dr.findElements(By.xpath(".//*[@id='wrapper']/div[3]/div/div/div/div[3]/ul[2]/li"));
+		int no=option.size();
+		System.out.println("Total number of items: "+no);
+		for(i=1;i<=no;i++){
+			String str1=".//*[@id='wrapper']/div[3]/div/div/div/div[3]/ul[2]/li[";
+			String str2="]";
+			dr.findElement(By.xpath(str1+i+str2)).click();
+			GetWindsorTitle();
+			GetWindsorDescription();
+		}
 		dr.quit();
 		}
 }
