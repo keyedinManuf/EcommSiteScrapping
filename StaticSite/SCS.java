@@ -1,5 +1,8 @@
 package StaticSite;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +44,25 @@ public class SCS {
 		dr.navigate().back();	
 		SCSWriteCSV.SetExcelData(i,j,Text);
 	}
+	 
+	public static void GetMainImage() throws AWTException, InterruptedException{
+		dr.findElement(By.xpath(".//*[@id='wrapper']/div[3]/div/div[1]/ul/li/div/img")).click();
+		Actions act = new Actions(dr).contextClick();
+		act.click().build().perform();
+		Robot down = new Robot();
+		down.delay(3000);
+		down.keyPress(KeyEvent.VK_V);
+		down.keyRelease(KeyEvent.VK_V);
+		dr.switchTo().frame(1);
+		down.keyPress(KeyEvent.VK_ENTER);
+		down.keyRelease(KeyEvent.VK_ENTER);
+		down.keyRelease(KeyEvent.VK_ESCAPE);
+		down.keyRelease(KeyEvent.VK_ESCAPE);
+		TimeUnit.SECONDS.sleep(4);
+		dr.navigate().refresh();
+		
+		
+	}
 	
 	public static void GetWindsorTitle() throws Exception{
 		SCSWriteCSV.getExcelPath("C:\\Users\\sakthivel\\Documents\\SCS\\SCS.xlsx", "Title");
@@ -70,7 +92,10 @@ public class SCS {
 		Actions act = new Actions(dr);
 		act.moveToElement(Fabric).click().perform();
 		dr.findElement(By.xpath(".//*[@id='nav-main__list']/li[2]/div/div/div[1]/ul/li[4]/a")).click();
-		dr.findElement(By.xpath(".//*[@id='wrapper']/div[4]/div/div/div/div[2]/div/div[1]/div/div/a")).click();
+		WebDriverWait filt = new WebDriverWait(dr, 10);
+		filt.until(ExpectedConditions.presenceOfElementLocated(By.xpath(".//*[@id='wrapper']/div[4]/div/div/div/div[2]/div/div[1]/div/div/a")));
+		WebElement Filter =dr.findElement(By.xpath(".//*[@id='wrapper']/div[4]/div/div/div/div[2]/div/div[1]/div/div/a"));
+		act.moveToElement(Filter).click().perform();
 		dr.findElement(By.xpath(".//*[@id='category-level-2']/li[1]/a")).click();
 		JavascriptExecutor jse = (JavascriptExecutor)dr;
 		jse.executeScript("scroll(0, 2500)");
@@ -82,6 +107,7 @@ public class SCS {
 		String str2="]";
 		dr.findElement(By.xpath(str1+i+str2)).click();
 		GetProductTitle();
+		GetMainImage();
 		GetProductDescription();
 		}
 		dr.findElement(By.xpath(".//*[@id='wrapper']/div[3]/div/div/div/div[3]/ul[2]/li[1]")).click();
@@ -93,6 +119,7 @@ public class SCS {
 			String str2="]";
 			dr.findElement(By.xpath(str1+i+str2)).click();
 			GetWindsorTitle();
+			GetMainImage();
 			GetWindsorDescription();
 		}
 		dr.quit();
